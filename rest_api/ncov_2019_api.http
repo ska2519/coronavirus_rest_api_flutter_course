@@ -1,0 +1,35 @@
+//get an access token - variables are defined 파일 내부에 변수를 정의
+
+POST {{baseUrl}}/token
+Authorization: Basic {{authorization}} 
+
+//USE ### as divider between requests
+###
+
+GET {{baseUrl}}/cases
+// I can specify what response format I want (원하는 응답 형태 지정)
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+
+GET {{baseUrl}}/casesSuspected
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+
+GET {{baseUrl}}/casesConfirmed
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+
+GET {{baseUrl}}/deaths
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+###
+
+GET {{baseUrl}}/recovered
+Accept: application/json
+Authorization: Bearer {{accessToken}}
