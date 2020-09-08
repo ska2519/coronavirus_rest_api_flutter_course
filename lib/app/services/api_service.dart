@@ -33,7 +33,7 @@ class APIService{
       'Request ${api.tokenUri()} failed\nResponse : ${response.statusCode} ${response.reasonPhrase}');
   throw response;
   }
-
+  // Future<int> APIService give exactly what we need
   Future<int> getEndpointData({
     @required String accessToken,
     @required Endpoint endpoint,
@@ -41,6 +41,7 @@ class APIService{
     final uri = api.endPointUri(endpoint);
     final response = await http.get(
       uri.toString(),
+      // Make requests(implementation detail)
       headers: {'Authorization':'Bearer $accessToken'},
     );
      if(response.statusCode ==200){
@@ -50,6 +51,7 @@ class APIService{
        //add a defensive check
        if(data.isNotEmpty){
          final Map<String, dynamic> endpointData = data[0];
+         //Parse responses(implementation detail)
          final String responseJsonKey = _responseJsonKeys[endpoint];
          final int result = endpointData[responseJsonKey];
          if(result != null){
