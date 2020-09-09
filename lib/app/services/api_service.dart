@@ -33,6 +33,7 @@ class APIService{
       'Request ${api.tokenUri()} failed\nResponse : ${response.statusCode} ${response.reasonPhrase}');
   throw response;
   }
+
   // Future<int> APIService give exactly what we need
   Future<int> getEndpointData({
     @required String accessToken,
@@ -63,15 +64,16 @@ class APIService{
          print('Request $uri failed\nResponse : ${response.statusCode} ${response.reasonPhrase}');
      throw response;
   }
-//a new map that associates each end point to the json key that we will use to extract the data - 각 끝점을 데이터를 추출하는 데 사용할 json 키에 연결하는 새 맵.
-//map has keys of type, end point and values of type string.
-static Map<Endpoint, String> _responseJsonKeys = {
-Endpoint.cases: 'cases',
-Endpoint.casesSuspected: 'data',
-Endpoint.casesConfirmed:'data',
-Endpoint.deaths:'data',
-Endpoint.recovered:'data',
-};
+
+  //  new map that associates each end point to the json key that we will use to extract the data - 각 끝점을 데이터를 추출하는 데 사용할 json 키에 연결하는 새 맵.
+  //  map has keys of type, end point and values of type string.
+  static Map<Endpoint, String> _responseJsonKeys = {
+    Endpoint.cases: 'cases',
+    Endpoint.casesSuspected: 'data',
+    Endpoint.casesConfirmed:'data',
+    Endpoint.deaths:'data',
+    Endpoint.recovered:'data',
+  };
 
 }
 //errors should be handled by the presentation and UI Layer of the app
