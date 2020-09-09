@@ -1,6 +1,7 @@
 import 'package:coronavirus_rest_api_flutter_course/app/repositories/endpoints_data.dart';
 import 'package:coronavirus_rest_api_flutter_course/app/services/api.dart';
 import 'package:coronavirus_rest_api_flutter_course/app/services/api_service.dart';
+import 'package:coronavirus_rest_api_flutter_course/app/services/endpoint_data.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 
@@ -15,15 +16,15 @@ class DataRepository{
   //get the data for a given endpoint
   //  Future<int>는 can show in our UI
 
-  Future<int> getEndpointData(Endpoint endpoint) async => 
-    await _getDataRefreshingToken<int>(
+  Future<EndpointData> getEndpointData(Endpoint endpoint) async => 
+    await _getDataRefreshingToken<EndpointData>(
       onGetData: () => apiService.getEndpointData(
         accessToken: _accessToken, endpoint: endpoint),
     );
 
   
   //Reading all endpoints at once
-  Future<EndpointData> getAllEndpointsData() async =>
+  Future<EndpointsData> getAllEndpointsData() async =>
   await _getDataRefreshingToken(onGetData: _getAllEndpointsData);
 
 
@@ -50,7 +51,7 @@ class DataRepository{
     }
   }
 
-  Future<EndpointData> _getAllEndpointsData() async {
+  Future<EndpointsData> _getAllEndpointsData() async {
     // final cases = await apiService.getEndpointData(accessToken: _accessToken, endpoint: Endpoint.cases);
     // final casesSuspected = await apiService.getEndpointData(accessToken: _accessToken, endpoint: Endpoint.casesSuspected);
     // final casesConfirmed = await apiService.getEndpointData(accessToken: _accessToken, endpoint: Endpoint.casesConfirmed);
@@ -66,7 +67,7 @@ class DataRepository{
       apiService.getEndpointData(accessToken: _accessToken, endpoint: Endpoint.deaths),
       apiService.getEndpointData(accessToken: _accessToken, endpoint: Endpoint.recovered),
     ]);
-    return EndpointData(values: {
+    return EndpointsData(values: {
        Endpoint.cases: values[0], 
        Endpoint.casesSuspected: values[1],
        Endpoint.casesConfirmed: values[2],

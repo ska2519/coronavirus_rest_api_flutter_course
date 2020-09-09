@@ -3,6 +3,7 @@
 //how to use the HTTP package to make a post request.
 import 'dart:convert';
 
+import 'package:coronavirus_rest_api_flutter_course/app/services/endpoint_data.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:coronavirus_rest_api_flutter_course/app/services/api.dart';
@@ -35,7 +36,7 @@ class APIService{
   }
 
   // Future<int> APIService give exactly what we need
-  Future<int> getEndpointData({
+  Future<EndpointData> getEndpointData({
     @required String accessToken,
     @required Endpoint endpoint,
   }) async {
@@ -54,9 +55,12 @@ class APIService{
          final Map<String, dynamic> endpointData = data[0];
          //Parse responses(implementation detail)
          final String responseJsonKey = _responseJsonKeys[endpoint];
-         final int result = endpointData[responseJsonKey];
-         if(result != null){
-           return result;
+         final int value = endpointData[responseJsonKey];
+         final String dateString = endpointData['date'];
+         //parse 보단 tryParse - swallow the exception and just return.
+         final date = DateTime.tryParse(dateString);
+         if(value != null){
+           return EndpointData(value: value, date: date);
          }
        }
      }
