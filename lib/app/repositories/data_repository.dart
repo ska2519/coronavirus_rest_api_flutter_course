@@ -1,14 +1,16 @@
 import 'package:coronavirus_rest_api_flutter_course/app/repositories/endpoints_data.dart';
 import 'package:coronavirus_rest_api_flutter_course/app/services/api.dart';
 import 'package:coronavirus_rest_api_flutter_course/app/services/api_service.dart';
+import 'package:coronavirus_rest_api_flutter_course/app/services/data_cache_service.dart';
 import 'package:coronavirus_rest_api_flutter_course/app/services/endpoint_data.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 
 //data repository class to only refresh the access token when needed
 class DataRepository{
-  DataRepository({@required this.apiService});
+  DataRepository( {@required this.apiService,@required this.dataCacheService});
   final APIService apiService;
+  final DataCacheService dataCacheService;
 
   //save the token as a state variable.
   String _accessToken;
@@ -21,25 +23,30 @@ class DataRepository{
       onGetData: () => apiService.getEndpointData(
         accessToken: _accessToken, endpoint: endpoint),
     );
+    // Read EndpointsData from cache
+  EndpointsData getAllEndpointsCachedData() => dataCacheService.getData();
 
-  
   //Reading all endpoints at once
-  Future<EndpointsData> getAllEndpointsData() async =>
-  await _getDataRefreshingToken(onGetData: _getAllEndpointsData);
-
-
-
-
+  Future<EndpointsData> getAllEndpointsData() async {
+  final endpointsData = await _getDataRefreshingToken(
+    onGetData: _getAllEndpointsData
+  );
+  // Save to cache
+  await dataCacheService.setData(endpointsData);
+  return endpointsData;
+  
+  }
+  
   // use generics and function arguments to make code more reusable
   // <T> because 2가지 type 받음 Future<int>, Future<EndpointData> 
   Future<T> _getDataRefreshingToken<T>({Future<T> Function() onGetData}) async {
     try{
-    if(_accessToken == null ){
+      if(_accessToken == null ){
      _accessToken = await apiService.getAccessToken();
-    }
-    return await onGetData();
+     }
+      return await onGetData();
     
-    //Response class is String API Class
+      //Response class is String API Class
     } on Response catch (response) {
       if(response.statusCode ==401){
         //if unauthorized, get access token again
